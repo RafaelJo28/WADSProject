@@ -1,6 +1,5 @@
 # Final Project – Web Application Development and Security
 
-Course Code: COMP6703001  
 Course Name: Web Application Development and Security  
 Institution: BINUS University International  
 
@@ -15,7 +14,8 @@ Project Domain:
 Homework Question & Answer Assistant
 
 Class:  
-L4AC
+- LEC: L4BC
+- LAB: B4BC
 
 Group Members:  
 - Jovanney Rafael Husni – Backend & AI Implementing
@@ -70,6 +70,10 @@ AI:
 Deployment:  
 - Docker and cloud-based hosting
 
+Cloud Hosting:
+- Vercel (Frontend & API Deployment)
+- Managed PostgreSQL Service
+
 Version Control:  
 - GitHub
 
@@ -80,11 +84,42 @@ Version Control:
 ### 5.1 Architecture Diagram (Text-Based)
 
 User (Browser)
-↓
+->
 Frontend (Next.js)
-↓
+->
 REST API (Node.js / Next.js API Routes)
-↓
+->
 Database (PostgreSQL)
-↓
+->
 AI Services (OCR & NLP)
+
+---
+
+### 5.2 Architecture Explanation
+
+The frontend is implemented using Next.js and handles user interactions such as question
+submission and displaying results. All communication between the frontend and backend
+is performed using RESTful API calls.
+
+The backend is responsible for business logic, input validation, authentication, and
+database operations. AI services, including OCR and NLP-based explanation generation,
+are accessed only through the backend to ensure secure API key handling and controlled
+AI usage.
+
+The database stores user data, submitted questions, and solution history. Security
+controls such as input validation, rate limiting, and access control are enforced at
+the backend API layer to protect the system from misuse and attacks.
+
+---
+
+## Notes
+
+This README serves as the submission for **Weekly Final Project Checkpoint 01**, covering:
+- Project selection  
+- Technology stack  
+- System architecture  
+
+Further features, testing, security implementation, AI testing, and deployment details
+will be completed and documented in later project checkpoints.
+
+
