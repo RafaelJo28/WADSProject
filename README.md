@@ -110,6 +110,8 @@ The database stores user data, submitted questions, and solution history. Securi
 controls such as input validation, rate limiting, and access control are enforced at
 the backend API layer to protect the system from misuse and attacks.
 
+The system follows a Modular Monolithic Architecture. All components are deployed as a single application, but internally structured into separate modules (API, AI service layer, database layer, authentication layer) to maintain scalability and maintainability.
+
 ---
 
 ## Notes
