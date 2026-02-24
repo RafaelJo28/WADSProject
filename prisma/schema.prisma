@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("student")
+  createdAt DateTime @default(now())
+
+  questions Question[]
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  content     String
+  imageUrl    String?
+  subject     String
+  status      String   @default("pending")
+  createdAt   DateTime @default(now())
+
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+
+  answer    Answer?
+  followUps FollowUp[]
+}
+
+model Answer {
+  id         String   @id @default(cuid())
+  content    String
+  createdAt  DateTime @default(now())
+
+  questionId String   @unique
+  question   Question @relation(fields: [questionId], references: [id])
+}
+
+model FollowUp {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  createdAt DateTime @default(now())
+
+  questionId String
+  parentQ    Question @relation(fields: [questionId], references: [id])
+}
