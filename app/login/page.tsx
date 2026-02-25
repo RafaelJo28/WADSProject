@@ -73,7 +73,7 @@ export default function LoginPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-purple-300 mb-2">Password</label>
-              <input type="password" placeholder="••••••••" value={form.password}
+              <input type="password" placeholder="Enter your password here" value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
                 className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 border border-purple-900/40"
                 style={{ background: "rgba(255,255,255,0.05)" }} required />

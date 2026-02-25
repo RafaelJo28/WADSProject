@@ -296,9 +296,20 @@ export default function LandingPage() {
           Assistant
         </h1>
 
-        <div style={{ height: "440px" }} />
+        <div style={{ height: "460px" }} />
 
-        <p className="text-gray-400 text-base max-w-sm leading-relaxed mb-6">
+<h2 className="font-black text-white mb-4"
+  style={{
+    fontFamily: "var(--font-orbitron)",
+    fontSize: "clamp(1.5rem, 4vw, 2.5rem)",
+    background: "linear-gradient(90deg, #c084fc, #f472b6, #818cf8)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+  }}>
+  Orbot
+</h2>
+
+<p className="text-gray-400 text-base max-w-sm leading-relaxed mb-6">
           Get instant step-by-step explanations for any homework question
         </p>
 
