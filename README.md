@@ -1,36 +1,134 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Final Project – Web Application Development and Security
 
-## Getting Started
+Course Name: Web Application Development and Security  
+Institution: BINUS University International  
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 1. Project Information
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Project Title:  
+Homework Question & Answer Assistant
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Project Domain:  
+Homework Question & Answer Assistant
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Class:  
+- LEC: L4BC
+- LAB: B4BC
 
-## Learn More
+Group Members:  
+- Jovanney Rafael Husni – Backend & AI Implementing
+- Catherine Isabelle Ong – Frontend & UI  
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 3. Project Overview
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3.1 Problem Statement
 
-## Deploy on Vercel
+Many students experience difficulty understanding homework questions, especially when
+studying independently outside of classroom hours. Existing tools often provide only
+final answers without clear step-by-step explanations, which limits students’ ability
+to learn the underlying concepts. Additionally, students may struggle to ask follow-up
+questions when they do not understand certain solution steps.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 3.2 Solution Overview
+
+This project is a Homework Question & Answer Assistant web application that allows
+students to submit homework questions in text or image format. The system analyzes the
+submitted question and generates step-by-step explanations to help students understand
+the solution process.
+
+The application supports image-based questions by using OCR to convert images into text
+before processing. Users may also submit follow-up clarification questions based on the
+initial explanation. AI functionality is treated as a core component of the system and
+is securely integrated through backend APIs.
+
+---
+
+## 4. Technology Stack (Mandatory)
+
+Frontend:  
+- Next.js (React)
+
+Backend:  
+- Node.js (Next.js API Routes)
+
+API:  
+- RESTful API (JSON)
+
+Database:  
+- PostgreSQL with Prisma ORM
+
+AI:  
+- OCR for image-based questions  
+- NLP for question understanding and explanation generation
+
+Deployment:  
+- Docker and cloud-based hosting
+
+Cloud Hosting:
+- Vercel (Frontend & API Deployment)
+- Managed PostgreSQL Service
+
+Version Control:  
+- GitHub
+
+---
+
+## 5. System Architecture
+
+### 5.1 Architecture Diagram (Text-Based)
+
+User (Browser)
+->
+Frontend (Next.js)
+->
+REST API (Node.js / Next.js API Routes)
+->
+Database (PostgreSQL)
+->
+AI Services (OCR & NLP)
+
+---
+
+### 5.2 Architecture Explanation
+
+The frontend is implemented using Next.js and handles user interactions such as question
+submission and displaying results. All communication between the frontend and backend
+is performed using RESTful API calls.
+
+The backend is responsible for business logic, input validation, authentication, and
+database operations. AI services, including OCR and NLP-based explanation generation,
+are accessed only through the backend to ensure secure API key handling and controlled
+AI usage.
+
+The database stores user data, submitted questions, and solution history. Security
+controls such as input validation, rate limiting, and access control are enforced at
+the backend API layer to protect the system from misuse and attacks.
+
+The system follows a Modular Monolithic Architecture. All components are deployed as a single application, but internally structured into separate modules (API, AI service layer, database layer, authentication layer) to maintain scalability and maintainability.
+
+---
+
+## Notes
+
+This README serves as the submission for **Weekly Final Project Checkpoint 01**, covering:
+- Project selection  
+- Technology stack  
+- System architecture  
+
+Further features, testing, security implementation, AI testing, and deployment details
+will be completed and documented in later project checkpoints.
+
+env content:
+DATABASE_URL="postgresql://neondb_owner:npg_u8ZkCoGeBgR0@ep-flat-frost-a1bzs3o4-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+DATABASE_URL_UNPOOLED="postgresql://neondb_owner:npg_u8ZkCoGeBgR0@ep-flat-frost-a1bzs3o4-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+
+NEXTAUTH_SECRET="banana-pizza-keyboard-6767-funny"
+NEXTAUTH_URL="http://localhost:3000"
+
+GROQ_API_KEY="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"
