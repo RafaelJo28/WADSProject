@@ -7,7 +7,7 @@ import Navbar from "../../components/Navbar"
 import Stars from "../../components/Stars"
 
 const MarkdownContent = ({ content }: { content: string }) => (
-  <div className="text-gray-300 text-sm leading-7 prose prose-invert max-w-none">
+  <div className="text-gray-300 text-sm leading-7 max-w-none">
     <ReactMarkdown
       components={{
         p: ({ children }) => <p className="mb-4">{children}</p>,
@@ -15,10 +15,30 @@ const MarkdownContent = ({ content }: { content: string }) => (
         ol: ({ children }) => <ol className="list-decimal pl-6 space-y-2 mb-4">{children}</ol>,
         ul: ({ children }) => <ul className="list-disc pl-6 space-y-2 mb-4">{children}</ul>,
         li: ({ children }) => <li className="mb-1">{children}</li>,
-        code: ({ children }) => (
-          <code className="block text-center bg-purple-900/30 text-purple-300 rounded-lg px-4 py-3 my-3 font-mono font-bold text-base border border-purple-700/30">
+        pre: ({ children }) => (
+          <pre className="rounded-xl p-4 my-4 overflow-x-auto text-left font-mono text-sm leading-6 border border-purple-700/30"
+            style={{ background: "rgba(30, 10, 60, 0.8)", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
             {children}
-          </code>
+          </pre>
+        ),
+        code: ({ inline, children, ...props }: any) =>
+          inline ? (
+            <code className="px-2 py-0.5 rounded font-mono text-xs text-purple-300"
+              style={{ background: "rgba(124, 58, 237, 0.2)" }}>
+              {children}
+            </code>
+          ) : (
+            <code className="block font-mono text-sm text-purple-200" style={{ whiteSpace: "pre-wrap" }}>
+              {children}
+            </code>
+          ),
+        h1: ({ children }) => <h1 className="text-xl font-bold text-white mb-3 mt-4">{children}</h1>,
+        h2: ({ children }) => <h2 className="text-lg font-bold text-white mb-3 mt-4">{children}</h2>,
+        h3: ({ children }) => <h3 className="text-md font-bold text-purple-300 mb-2 mt-3">{children}</h3>,
+        blockquote: ({ children }) => (
+          <blockquote className="border-l-4 border-purple-500 pl-4 my-3 text-gray-400 italic">
+            {children}
+          </blockquote>
         ),
       }}
     >

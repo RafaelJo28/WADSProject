@@ -129,7 +129,7 @@ export default function ProfilePage() {
               <label className="block text-sm font-medium text-purple-300 mb-2">
                 New Password <span className="text-gray-600">(leave blank to keep current)</span>
               </label>
-              <input type="password" placeholder="••••••••"
+              <input type="password" placeholder="Enter new password here"
                 value={form.newPassword}
                 onChange={e => setForm({ ...form, newPassword: e.target.value })}
                 className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 border border-purple-900/40"

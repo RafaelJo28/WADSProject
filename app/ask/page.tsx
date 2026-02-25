@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import Navbar from "../components/Navbar"
 import Stars from "../components/Stars"
 
-const SUBJECTS = ["Math", "Science", "Physics", "Chemistry", "Biology", "History", "English", "Other"]
+const SUBJECTS = ["Math", "Science", "Physics", "Chemistry", "Biology", "History", "English", "Computer Science", "Other"]
 
 export default function AskPage() {
   const router = useRouter()
