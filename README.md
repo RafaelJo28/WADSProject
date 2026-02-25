@@ -122,9 +122,8 @@ This README serves as the submission for **Weekly Final Project Checkpoint 01**,
 - System architecture  
 
 Further features, testing, security implementation, AI testing, and deployment details
-will be completed and documented in later project checkpoints.
+will be completed and documented in later project checkpoints. Env Contents Below.
 
-env content:
 DATABASE_URL="postgresql://neondb_owner:npg_u8ZkCoGeBgR0@ep-flat-frost-a1bzs3o4-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 DATABASE_URL_UNPOOLED="postgresql://neondb_owner:npg_u8ZkCoGeBgR0@ep-flat-frost-a1bzs3o4-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
