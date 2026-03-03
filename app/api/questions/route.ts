@@ -66,7 +66,10 @@ Format your response with numbered steps. Be encouraging and educational.`,
 
     return NextResponse.json({ id: question.id }, { status: 201 })
   } catch (err) {
-    console.error(err)
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 })
+    const errorMessage = err instanceof Error ? err.message : String(err)
+    const errorStack = err instanceof Error ? err.stack : ""
+    console.error("❌ Error in POST /api/questions:", errorMessage)
+    console.error("Stack:", errorStack)
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
 }
