@@ -72,7 +72,7 @@ Deployment:
 
 Cloud Hosting:
 - Vercel (Frontend & API Deployment)
-- Managed PostgreSQL Service
+- Managed PostgreSQL Service (Neon)
 
 Version Control:  
 - GitHub
