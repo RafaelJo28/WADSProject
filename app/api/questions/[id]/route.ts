@@ -20,14 +20,18 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const { id } = await params
 
-  const question = await db.question.findFirst({
-    where: { id, userId: user.userId },
-    include: { answer: true },
-  })
+  try {
+    const question = await db.question.findFirst({
+      where: { id, userId: user.userId },
+      include: { answer: true },
+    })
 
-  if (!question) return NextResponse.json({ error: "Not found" }, { status: 404 })
+    if (!question) return NextResponse.json({ error: "Question not found" }, { status: 404 })
 
-  return NextResponse.json(question)
+    return NextResponse.json(question)
+  } catch {
+    return NextResponse.json({ error: "Question not found" }, { status: 404 })
+  }
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -36,11 +40,14 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
   const { id } = await params
 
-  await db.followUp.deleteMany({ where: { questionId: id } })
-  await db.answer.deleteMany({ where: { questionId: id } })
-  await db.question.delete({ where: { id, userId: user.userId } })
-
-  return NextResponse.json({ message: "Deleted" })
+  try {
+    await db.followUp.deleteMany({ where: { questionId: id } })
+    await db.answer.deleteMany({ where: { questionId: id } })
+    await db.question.delete({ where: { id, userId: user.userId } })
+    return NextResponse.json({ message: "Question deleted successfully" })
+  } catch {
+    return NextResponse.json({ error: "Question not found" }, { status: 404 })
+  }
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -48,12 +55,17 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id } = await params
-  const { content } = await req.json()
 
-  await db.question.update({
-    where: { id, userId: user.userId },
-    data: { content },
-  })
+  try {
+    const { content } = await req.json()
 
-  return NextResponse.json({ message: "Updated" })
+    await db.question.update({
+      where: { id, userId: user.userId },
+      data: { content },
+    })
+
+    return NextResponse.json({ message: "Question updated successfully" })
+  } catch {
+    return NextResponse.json({ error: "Question not found" }, { status: 404 })
+  }
 }
