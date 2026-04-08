@@ -3,24 +3,39 @@ import { db } from "@/app/lib/db"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 
+
 export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json()
 
-    if (!email || !password) {
+
+    const trimmedEmail = email?.trim()
+
+
+    if (!trimmedEmail || trimmedEmail.length < 5 || trimmedEmail.length > 254) {
       return NextResponse.json(
-        { error: "All fields are required" },
+        { error: "Email is required and must be between 5 and 254 characters" },
         { status: 400 }
       )
     }
 
-    const user = await db.user.findUnique({ where: { email } })
+
+    if (!password || password.length < 8) {
+      return NextResponse.json(
+        { error: "Password is required and must be at least 8 characters" },
+        { status: 400 }
+      )
+    }
+
+
+    const user = await db.user.findUnique({ where: { email: trimmedEmail } })
     if (!user) {
       return NextResponse.json(
         { error: "Invalid email or password" },
         { status: 401 }
       )
     }
+
 
     const valid = await bcrypt.compare(password, user.password)
     if (!valid) {
@@ -30,16 +45,19 @@ export async function POST(req: NextRequest) {
       )
     }
 
+
     const token = jwt.sign(
       { userId: user.id, email: user.email, role: user.role },
       process.env.NEXTAUTH_SECRET!,
       { expiresIn: "7d" }
     )
 
+
     const response = NextResponse.json({
       message: "Login successful!",
       user: { id: user.id, name: user.name, email: user.email, role: user.role },
     })
+
 
     response.cookies.set("token", token, {
       httpOnly: true,
@@ -47,6 +65,7 @@ export async function POST(req: NextRequest) {
       maxAge: 60 * 60 * 24 * 7,
       path: "/",
     })
+
 
     return response
   } catch (err) {
