@@ -2,18 +2,41 @@ import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/app/lib/db"
 import bcrypt from "bcryptjs"
 
+
 export async function POST(req: NextRequest) {
   try {
     const { name, email, password } = await req.json()
 
-    if (!name || !email || !password) {
+
+    const trimmedName = name?.trim()
+    const trimmedEmail = email?.trim()
+
+
+    if (!trimmedName || trimmedName.length < 1 || trimmedName.length > 100) {
       return NextResponse.json(
-        { error: "All fields are required" },
+        { error: "Name is required and must be between 1 and 100 characters" },
         { status: 400 }
       )
     }
 
-    const existing = await db.user.findUnique({ where: { email } })
+
+    if (!trimmedEmail || trimmedEmail.length < 5 || trimmedEmail.length > 254) {
+      return NextResponse.json(
+        { error: "Email is required and must be between 5 and 254 characters" },
+        { status: 400 }
+      )
+    }
+
+
+    if (!password || password.length < 8) {
+      return NextResponse.json(
+        { error: "Password is required and must be at least 8 characters" },
+        { status: 400 }
+      )
+    }
+
+
+    const existing = await db.user.findUnique({ where: { email: trimmedEmail } })
     if (existing) {
       return NextResponse.json(
         { error: "Email already in use" },
@@ -21,11 +44,14 @@ export async function POST(req: NextRequest) {
       )
     }
 
+
     const hashed = await bcrypt.hash(password, 12)
 
+
     const user = await db.user.create({
-      data: { name, email, password: hashed },
+      data: { name: trimmedName, email: trimmedEmail, password: hashed },
     })
+
 
     return NextResponse.json(
       { message: "Account created!", userId: user.id },
