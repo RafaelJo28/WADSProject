@@ -2,10 +2,25 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import { jest } from '@jest/globals'
 import LoginPage from "@/app/login/page"
 
+
+// Mock Firebase before importing the component
+jest.mock("firebase/auth", () => ({
+  signInWithPopup: jest.fn(),
+  GoogleAuthProvider: jest.fn(),
+}))
+
+
+jest.mock("@/app/lib/firebase", () => ({
+  auth: {},
+  googleProvider: {},
+}))
+
+
 // Mock next/navigation
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: jest.fn() }),
 }))
+
 
 // mock OrbotLogo to avoid canvas context errors in components that render it
 jest.mock("@/app/components/OrbotLogo", () => ({
@@ -13,14 +28,17 @@ jest.mock("@/app/components/OrbotLogo", () => ({
   default: () => <div data-testid="orbot-logo" />,
 }))
 
+
 // Mock fetch
 // cast to MockedFunction so TypeScript knows the signature
 global.fetch = jest.fn() as unknown as jest.MockedFunction<typeof fetch>
+
 
 describe("Login Page", () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
+
 
   it("renders login form correctly", () => {
     render(<LoginPage />)
@@ -29,11 +47,13 @@ describe("Login Page", () => {
     expect(screen.getByText("Sign In →")).toBeInTheDocument()
   })
 
+
   it("renders Orbot branding", () => {
     render(<LoginPage />)
     expect(screen.getByText("Orbot")).toBeInTheDocument()
     expect(screen.getByText("Welcome Back")).toBeInTheDocument()
   })
+
 
   it("shows error message on failed login", async () => {
     ;(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
@@ -52,6 +72,7 @@ describe("Login Page", () => {
       expect(screen.getByText("Invalid credentials")).toBeInTheDocument()
     })
   })
+
 
   it("redirects to dashboard on successful login", async () => {
     const mockPush = jest.fn()
@@ -75,6 +96,7 @@ describe("Login Page", () => {
     })
   })
 
+
   it("shows loading state while signing in", async () => {
     ;(fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() => new Promise(() => {}))
     render(<LoginPage />)
@@ -89,6 +111,7 @@ describe("Login Page", () => {
       expect(screen.getByText("Signing in...")).toBeInTheDocument()
     })
   })
+
 
   it("has a link to register page", () => {
     render(<LoginPage />)
