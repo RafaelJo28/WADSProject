@@ -3,6 +3,7 @@ import { db } from "@/app/lib/db"
 import jwt from "jsonwebtoken"
 import Groq from "groq-sdk"
 
+
 function getUserFromToken(req: NextRequest) {
   const token = req.cookies.get("token")?.value
   if (!token) return null
@@ -15,11 +16,14 @@ function getUserFromToken(req: NextRequest) {
   }
 }
 
+
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = getUserFromToken(req)
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
+
   const { id } = await params
+
 
   try {
     const followUps = await db.followUp.findMany({
@@ -32,28 +36,45 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 }
 
+
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = getUserFromToken(req)
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
+
   const { id } = await params
+  const trimmedId = id?.trim()
+
+
+  if (!trimmedId || trimmedId.length < 1 || trimmedId.length > 100) {
+    return NextResponse.json({ error: "Invalid question ID" }, { status: 400 })
+  }
+
 
   try {
     const body = await req.json()
     const { question } = body
 
-    if (!question || question.trim() === "") {
-      return NextResponse.json({ error: "Missing required field: question" }, { status: 400 })
+
+    const trimmedQuestion = question?.trim()
+
+
+    if (!trimmedQuestion || trimmedQuestion.length < 1 || trimmedQuestion.length > 10000) {
+      return NextResponse.json({ error: "Question is required and must be between 1 and 10000 characters" }, { status: 400 })
     }
 
+
     const parent = await db.question.findFirst({
-      where: { id, userId: user.userId },
+      where: { id: trimmedId, userId: user.userId },
       include: { answer: true },
     })
 
+
     if (!parent) return NextResponse.json({ error: "Question not found" }, { status: 404 })
 
+
     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! })
+
 
     const completion = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
@@ -61,21 +82,26 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         {
           role: "user",
           content: `A student was studying this question: "${parent.content}"
-          
+         
 The AI gave this explanation: "${parent.answer?.content}"
 
-The student now asks: "${question}"
+
+The student now asks: "${trimmedQuestion}"
+
 
 Please answer this follow-up clearly and helpfully.`,
         },
       ],
     })
 
+
     const answer = completion.choices[0].message.content ?? ""
 
+
     const followUp = await db.followUp.create({
-      data: { question, answer, questionId: id },
+      data: { question: trimmedQuestion, answer, questionId: trimmedId },
     })
+
 
     return NextResponse.json(followUp, { status: 201 })
   } catch {
