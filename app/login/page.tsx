@@ -54,8 +54,9 @@ export default function LoginPage() {
       } else {
         setError(data.error)
       }
-    } catch (err) {
-      setError("Google sign-in failed. Please try again.")
+    } catch (err: any) {
+      console.error("Google login error:", err)
+      setError(err?.message || "Google sign-in failed. Please try again.")
     } finally {
       setGoogleLoading(false)
     }

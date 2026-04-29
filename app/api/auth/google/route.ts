@@ -58,8 +58,9 @@ export async function POST(req: NextRequest) {
     })
 
     return response
-  } catch (error) {
+  } catch (error: any) {
     console.error("Google auth error:", error)
-    return NextResponse.json({ error: "Authentication failed" }, { status: 401 })
+    const message = error?.message || "Authentication failed"
+    return NextResponse.json({ error: message }, { status: 401 })
   }
 }
