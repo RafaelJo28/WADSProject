@@ -32,7 +32,7 @@ export default function Stars({ count = 60 }: { count?: number }) {
           animationDelay: s.delay + "s",
         }} />
       ))}
-      <style jsx>{`
+      <style>{`
         @keyframes twinkle {
           0%, 100% { opacity: 0.1; }
           50% { opacity: 0.7; }

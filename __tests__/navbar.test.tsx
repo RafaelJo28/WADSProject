@@ -6,6 +6,14 @@ jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: jest.fn() }),
 }))
 
+jest.mock("next/link", () => {
+  const React = require('react')
+  return {
+    __esModule: true,
+    default: ({ children, ...props }: any) => React.createElement('span', props, children),
+  }
+})
+
 jest.mock("@/app/components/OrbotLogo", () => ({
   __esModule: true,
   default: () => <div data-testid="orbot-logo" />,
