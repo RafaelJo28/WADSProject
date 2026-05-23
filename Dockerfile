@@ -6,13 +6,13 @@ ARG NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
 ARG NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
 ARG NEXT_PUBLIC_FIREBASE_APP_ID
 
-# Base Dependencies Sigma
+# Base Dependencies
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-# Build Stage Sigma
+# Build Stage 
 FROM node:20-alpine AS builder
 WORKDIR /app
 # Make build args available as env vars during the build so Next.js can read them.
@@ -34,7 +34,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
-# Production Running Sigma Very Sigma
+# Production Running
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
