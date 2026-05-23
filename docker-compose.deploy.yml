@@ -1,0 +1,12 @@
+services:
+  web:
+    image: koeljoel/nextjs-week10-app:v1
+    container_name: nextjs-week10-deployed
+    ports:
+      - "80:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
