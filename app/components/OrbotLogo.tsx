@@ -12,8 +12,12 @@ export default function OrbotLogo({ size = 40, clickable = true }: { size?: numb
     if (!canvas) return
     const ctx = canvas.getContext("2d")
     if (!ctx) return
-    canvas.width = size
-    canvas.height = size
+    const dpr = Math.max(window.devicePixelRatio || 1, 1)
+    canvas.width = Math.round(size * dpr)
+    canvas.height = Math.round(size * dpr)
+    canvas.style.width = `${size}px`
+    canvas.style.height = `${size}px`
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     let t = 0
     let animId: number
 
@@ -112,6 +116,7 @@ export default function OrbotLogo({ size = 40, clickable = true }: { size?: numb
       ref={canvasRef}
       width={size}
       height={size}
+      style={{ width: `${size}px`, height: `${size}px` }}
       onClick={() => clickable && router.push("/")}
       className={clickable ? "cursor-pointer" : ""}
     />

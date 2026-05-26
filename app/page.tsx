@@ -9,20 +9,34 @@ export default function LandingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const auroraRef = useRef<HTMLCanvasElement>(null)
 
+  const resizeCanvas = (canvas: HTMLCanvasElement) => {
+    const dpr = Math.max(window.devicePixelRatio || 1, 1)
+    const width = Math.round(window.innerWidth * dpr)
+    const height = Math.round(window.innerHeight * dpr)
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width
+      canvas.height = height
+    }
+    canvas.style.width = "100vw"
+    canvas.style.height = "100vh"
+    const ctx = canvas.getContext("2d")
+    if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    return { width: window.innerWidth, height: window.innerHeight }
+  }
+
   useEffect(() => {
     const canvas = auroraRef.current
     if (!canvas) return
     const ctx = canvas.getContext("2d")
     if (!ctx) return
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight }
+    const resize = () => resizeCanvas(canvas)
+    resize()
     window.addEventListener("resize", resize)
     let t = 0
     let animId: number
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      const W = canvas.width, H = canvas.height
+      const { width: W, height: H } = resize()
+      ctx.clearRect(0, 0, W, H)
       const waves = [
         { y: H * 0.25, color1: "rgba(88, 28, 220, 0.35)", color2: "rgba(139, 92, 246, 0.15)", speed: 0.3, amp: 80 },
         { y: H * 0.35, color1: "rgba(168, 85, 247, 0.25)", color2: "rgba(236, 72, 153, 0.12)", speed: 0.2, amp: 60 },
@@ -57,17 +71,17 @@ export default function LandingPage() {
     if (!canvas) return
     const ctx = canvas.getContext("2d")
     if (!ctx) return
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight }
+    const resize = () => resizeCanvas(canvas)
+    resize()
     window.addEventListener("resize", resize)
     let t = 0
     let animId: number
 
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      const cx = canvas.width / 2
-      const cy = canvas.height / 2
+      const { width: W, height: H } = resize()
+      ctx.clearRect(0, 0, W, H)
+      const cx = W / 2
+      const cy = H / 2
       const R = 155
 
       const glow = ctx.createRadialGradient(cx, cy, R * 0.5, cx, cy, R * 2.2)
@@ -270,12 +284,12 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
+    <div className="min-h-screen h-screen w-screen flex flex-col items-center justify-center relative overflow-hidden"
       style={{ background: "radial-gradient(ellipse at 50% 50%, #0d0520 0%, #060010 60%, #000000 100%)" }}>
 
-      <canvas ref={auroraRef} className="absolute inset-0 w-full h-full pointer-events-none" />
+      <canvas ref={auroraRef} className="fixed inset-0 w-full h-full pointer-events-none" />
       <Stars count={80} />
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
+      <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none" />
 
       <div className="relative z-10 flex flex-col items-center text-center px-6 gap-0">
         <p className="text-purple-300 text-xs font-semibold tracking-[0.3em] uppercase mb-4">
