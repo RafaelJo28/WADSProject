@@ -16,15 +16,15 @@ export default function Navbar({ active }: { active?: string }) {
   return (
     <nav className="border-b border-purple-900/30 backdrop-blur-md"
       style={{ background: "rgba(6, 0, 16, 0.85)" }}>
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push("/")}>
+      <div className="max-w-6xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-col items-center gap-1 cursor-pointer sm:flex-row sm:items-center" onClick={() => router.push("/")}>
           <OrbotLogo size={36} />
-          <span className="text-white font-black text-xl tracking-wide"
+          <span className="text-white font-black text-lg sm:text-xl tracking-wide text-center sm:text-left"
             style={{ fontFamily: "var(--font-orbitron)" }}>
             Orbot
           </span>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap items-center justify-end gap-4">
           {[
             { label: "Dashboard", href: "/dashboard" },
             { label: "Ask", href: "/ask" },
