@@ -12,8 +12,12 @@ export async function POST(req: NextRequest) {
     }
 
     // Verify the Firebase ID token
-    const decoded = await adminAuth.verifyIdToken(idToken)
-    const { uid, email, name, picture } = decoded
+    const decoded = await adminAuth.verifyIdToken(idToken) as {
+      uid: string
+      email?: string
+      name?: string
+    }
+    const { uid, email, name } = decoded
 
     if (!email) {
       return NextResponse.json({ error: "No email found" }, { status: 400 })
@@ -58,9 +62,9 @@ export async function POST(req: NextRequest) {
     })
 
     return response
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Google auth error:", error)
-    const message = error?.message || "Authentication failed"
+    const message = error instanceof Error ? error.message : "Authentication failed"
     return NextResponse.json({ error: message }, { status: 401 })
   }
 }

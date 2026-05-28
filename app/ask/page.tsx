@@ -12,7 +12,6 @@ export default function AskPage() {
   const [form, setForm] = useState({ content: "", subject: "" })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const [image, setImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [ocrLoading, setOcrLoading] = useState(false)
   const [ocrDone, setOcrDone] = useState(false)
@@ -21,7 +20,6 @@ export default function AskPage() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    setImage(file)
     setImagePreview(URL.createObjectURL(file))
     setOcrLoading(true)
     setOcrDone(false)
@@ -120,8 +118,9 @@ export default function AskPage() {
             <div onClick={() => fileRef.current?.click()}
               className="border-2 border-dashed border-purple-900/50 rounded-xl p-6 text-center cursor-pointer transition-all hover:border-purple-500/50 hover:bg-purple-900/10">
               {imagePreview ? (
-                <img src={imagePreview} alt="preview" className="max-h-48 mx-auto rounded-lg object-contain" />
-              ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={imagePreview} alt="preview" className="max-h-48 mx-auto rounded-lg object-contain" />
+            ) : (
                 <div>
                   <p className="text-4xl mb-2">📸</p>
                   <p className="text-sm text-gray-500">Click to upload a photo of your homework</p>

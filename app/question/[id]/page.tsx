@@ -6,6 +6,21 @@ import ReactMarkdown from "react-markdown"
 import Navbar from "../../components/Navbar"
 import Stars from "../../components/Stars"
 
+type Question = {
+  id: string
+  subject: string
+  content: string
+  status: string
+  createdAt: string
+  answer?: { content: string }
+}
+
+type FollowUp = {
+  id: string
+  question: string
+  answer: string
+}
+
 const MarkdownContent = ({ content }: { content: string }) => (
   <div className="text-gray-300 text-sm leading-7 max-w-none">
     <ReactMarkdown
@@ -21,7 +36,7 @@ const MarkdownContent = ({ content }: { content: string }) => (
             {children}
           </pre>
         ),
-        code: ({ inline, children, ...props }: any) =>
+        code: ({ inline, children }: { inline?: boolean; children: React.ReactNode }) =>
           inline ? (
             <code className="px-2 py-0.5 rounded font-mono text-xs text-purple-300"
               style={{ background: "rgba(124, 58, 237, 0.2)" }}>
@@ -50,26 +65,29 @@ const MarkdownContent = ({ content }: { content: string }) => (
 export default function QuestionPage() {
   const { id } = useParams()
   const router = useRouter()
-  const [question, setQuestion] = useState<any>(null)
+  const [question, setQuestion] = useState<Question | null>(null)
   const [loading, setLoading] = useState(true)
   const [followUp, setFollowUp] = useState("")
   const [replyingTo, setReplyingTo] = useState<{ label: string; content: string } | null>(null)
-  const [followUps, setFollowUps] = useState<any[]>([])
+  const [followUps, setFollowUps] = useState<FollowUp[]>([])
   const [fuLoading, setFuLoading] = useState(false)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
 
-  useEffect(() => { fetchQuestion(); fetchFollowUps() }, [])
+  useEffect(() => {
+    const fetchQuestion = async () => {
+      const res = await fetch(`/api/questions/${id}`)
+      if (res.ok) setQuestion(await res.json())
+      setLoading(false)
+    }
 
-  const fetchQuestion = async () => {
-    const res = await fetch(`/api/questions/${id}`)
-    if (res.ok) setQuestion(await res.json())
-    setLoading(false)
-  }
+    const fetchFollowUps = async () => {
+      const res = await fetch(`/api/questions/${id}/followup`)
+      if (res.ok) setFollowUps(await res.json())
+    }
 
-  const fetchFollowUps = async () => {
-    const res = await fetch(`/api/questions/${id}/followup`)
-    if (res.ok) setFollowUps(await res.json())
-  }
+    void fetchQuestion()
+    void fetchFollowUps()
+  }, [id])
 
   const handleReply = (label: string, content: string) => {
     setReplyingTo({ label, content })
@@ -156,7 +174,7 @@ export default function QuestionPage() {
             onMouseEnter={() => setHoveredId("ai-answer")}
             onMouseLeave={() => setHoveredId(null)}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-md font-bold text-purple-400">✨ Orbot's Explanation</h3>
+              <h3 className="text-md font-bold text-purple-400">✨ Orbot&apos;s Explanation</h3>
               {hoveredId === "ai-answer" && (
                 <button onClick={() => handleReply("AI Explanation", question.answer.content)}
                   className="text-xs px-3 py-1 rounded-full font-medium transition-all hover:scale-105"
@@ -173,7 +191,7 @@ export default function QuestionPage() {
         {followUps.length > 0 && (
           <div className="space-y-4">
             <h3 className="text-md font-bold text-gray-400">💬 Follow-up Thread</h3>
-            {followUps.map((fu: any, index: number) => (
+            {followUps.map((fu, index) => (
               <div key={fu.id} className="space-y-2">
                 <div className="rounded-xl p-4 border border-purple-700/20"
                   style={{ background: "rgba(124, 58, 237, 0.1)" }}>

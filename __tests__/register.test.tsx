@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import { jest } from '@jest/globals'
+import * as nextNavigation from "next/navigation"
 import RegisterPage from "@/app/register/page"
 
 jest.mock("next/navigation", () => ({
@@ -55,7 +56,7 @@ describe("Register Page", () => {
 
   it("redirects to login on successful registration", async () => {
     const mockPush = jest.fn()
-    jest.spyOn(require("next/navigation"), "useRouter").mockReturnValue({ push: mockPush })
+    jest.spyOn(nextNavigation, "useRouter").mockReturnValue({ push: mockPush })
     ;(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
       ok: true,
       json: async () => ({}),

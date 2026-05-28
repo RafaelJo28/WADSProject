@@ -1,21 +1,31 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
+
+type Star = {
+  width: number
+  height: number
+  top: number
+  left: number
+  opacity: number
+  duration: number
+  delay: number
+}
+
+function generateStars(count: number): Star[] {
+  return Array.from({ length: count }, () => ({
+    width: Math.random() * 2 + 1,
+    height: Math.random() * 2 + 1,
+    top: Math.random() * 100,
+    left: Math.random() * 100,
+    opacity: Math.random() * 0.5 + 0.1,
+    duration: 2 + Math.random() * 3,
+    delay: Math.random() * 3,
+  }))
+}
 
 export default function Stars({ count = 60 }: { count?: number }) {
-  const [stars, setStars] = useState<any[]>([])
-
-  useEffect(() => {
-    setStars(Array.from({ length: count }, (_, i) => ({
-      width: Math.random() * 2 + 1,
-      height: Math.random() * 2 + 1,
-      top: Math.random() * 100,
-      left: Math.random() * 100,
-      opacity: Math.random() * 0.5 + 0.1,
-      duration: 2 + Math.random() * 3,
-      delay: Math.random() * 3,
-    })))
-  }, [count])
+  const [stars] = useState<Star[]>(() => generateStars(count))
 
   if (stars.length === 0) return null
 

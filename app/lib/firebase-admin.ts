@@ -7,7 +7,14 @@ const hasServiceAccount = Boolean(
     process.env.FIREBASE_ADMIN_PRIVATE_KEY
 )
 
-let adminAuth: ReturnType<typeof getAuth> | { verifyIdToken: (token: string) => Promise<any> }
+type FirebaseAdminToken = {
+  uid: string
+  email?: string
+  name?: string
+  picture?: string
+}
+
+let adminAuth: ReturnType<typeof getAuth> | { verifyIdToken: (token: string) => Promise<FirebaseAdminToken> }
 
 if (hasServiceAccount) {
   if (!getApps().length) {

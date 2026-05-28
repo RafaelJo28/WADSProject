@@ -1,18 +1,17 @@
+import React from "react"
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import { jest } from '@jest/globals'
+import * as nextNavigation from "next/navigation"
 import Navbar from "@/app/components/Navbar"
 
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: jest.fn() }),
 }))
 
-jest.mock("next/link", () => {
-  const React = require('react')
-  return {
-    __esModule: true,
-    default: ({ children, ...props }: any) => React.createElement('span', props, children),
-  }
-})
+jest.mock("next/link", () => ({
+  __esModule: true,
+  default: ({ children, ...props }: { children: React.ReactNode }) => React.createElement('span', props, children),
+}))
 
 jest.mock("@/app/components/OrbotLogo", () => ({
   __esModule: true,
@@ -55,7 +54,7 @@ describe("Navbar Component", () => {
 
   it("calls logout API and redirects on logout click", async () => {
     const mockPush = jest.fn()
-    jest.spyOn(require("next/navigation"), "useRouter").mockReturnValue({ push: mockPush })
+    jest.spyOn(nextNavigation, "useRouter").mockReturnValue({ push: mockPush })
     ;(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({ ok: true } as unknown as Response)
 
     const mockLocalStorage = {
