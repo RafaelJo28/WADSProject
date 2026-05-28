@@ -1,12 +1,20 @@
+version: "3.9"
+
 services:
-  web:
-    image: koeljoel/nextjs-week10-app:v1
-    container_name: nextjs-week10-deployed
-    ports:
-      - "80:3000"
+  app:
+    image: ${DOCKER_USERNAME}/homework-qa-assistant:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_FIREBASE_API_KEY: ${NEXT_PUBLIC_FIREBASE_API_KEY}
+        NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}
+        NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${NEXT_PUBLIC_FIREBASE_PROJECT_ID}
+        NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}
+        NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID}
+        NEXT_PUBLIC_FIREBASE_APP_ID: ${NEXT_PUBLIC_FIREBASE_APP_ID}
     env_file:
-      - .env
-    environment:
-      - NODE_ENV=production
-      - PORT=3000
+      - .env.production
+    ports:
+      - "3000:3000"
     restart: unless-stopped
