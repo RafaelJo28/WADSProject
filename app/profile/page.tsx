@@ -6,28 +6,34 @@ import Navbar from "../components/Navbar"
 import Stars from "../components/Stars"
 import OrbotLogo from "../components/OrbotLogo"
 
+interface User {
+  id: string
+  name: string
+  email: string
+}
+
 export default function ProfilePage() {
   const router = useRouter()
-  const [user, setUser] = useState<{ id: string; name: string; email: string } | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [form, setForm] = useState({ name: "", currentPassword: "", newPassword: "" })
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState("")
   const [error, setError] = useState("")
   const [questionCount, setQuestionCount] = useState(0)
 
-  useEffect(() => {
-    const stored = localStorage.getItem("user")
-    if (!stored) { router.push("/login"); return }
-    const u = JSON.parse(stored)
-    setUser(u)
-    setForm(f => ({ ...f, name: u.name }))
-    fetchStats()
-  }, [])
-
   const fetchStats = async () => {
     const res = await fetch("/api/questions")
     if (res.ok) setQuestionCount((await res.json()).length)
   }
+
+  useEffect(() => {
+    const stored = localStorage.getItem("user")
+    if (!stored) { router.push("/login"); return }
+    const u = JSON.parse(stored) as User
+    setUser(u)
+    setForm(f => ({ ...f, name: u.name }))
+    fetchStats()
+  }, [router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,9 +51,9 @@ export default function ProfilePage() {
       setError(data.error)
     } else {
       setSuccess("Profile updated successfully!")
-      const updated = { ...user, name: form.name }
+      const updated = { ...user, name: form.name } as User
       localStorage.setItem("user", JSON.stringify(updated))
-      setUser(updated as any)
+      setUser(updated)
     }
   }
 

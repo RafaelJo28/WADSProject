@@ -20,18 +20,18 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<{ name: string; email: string } | null>(null)
 
-  useEffect(() => {
-    const stored = localStorage.getItem("user")
-    if (!stored) { router.push("/login"); return }
-    setUser(JSON.parse(stored))
-    fetchQuestions()
-  }, [])
-
   const fetchQuestions = async () => {
     const res = await fetch("/api/questions")
     if (res.ok) setQuestions(await res.json())
     setLoading(false)
   }
+
+  useEffect(() => {
+    const stored = localStorage.getItem("user")
+    if (!stored) { router.push("/login"); return }
+    setUser(JSON.parse(stored))
+    fetchQuestions()
+  }, [router])
 
   return (
     <div className="min-h-screen relative overflow-hidden"

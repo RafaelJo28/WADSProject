@@ -27,14 +27,6 @@ export default function HistoryPage() {
   const [bookmarks, setBookmarks] = useState<string[]>([])
   const [showBookmarked, setShowBookmarked] = useState(false)
 
-  useEffect(() => {
-    const stored = localStorage.getItem("user")
-    if (!stored) { router.push("/login"); return }
-    fetchQuestions()
-    const savedBookmarks = localStorage.getItem("bookmarks")
-    if (savedBookmarks) setBookmarks(JSON.parse(savedBookmarks))
-  }, [])
-
   const fetchQuestions = async () => {
     const res = await fetch("/api/questions")
     if (res.ok) setQuestions(await res.json())
@@ -79,6 +71,14 @@ export default function HistoryPage() {
     }
     setSaving(false)
   }
+
+  useEffect(() => {
+    const stored = localStorage.getItem("user")
+    if (!stored) { router.push("/login"); return }
+    fetchQuestions()
+    const savedBookmarks = localStorage.getItem("bookmarks")
+    if (savedBookmarks) setBookmarks(JSON.parse(savedBookmarks))
+  }, [router])
 
   const filtered = questions.filter(q => {
     const matchesSearch = q.content.toLowerCase().includes(search.toLowerCase()) ||
