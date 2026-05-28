@@ -28,8 +28,12 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const stored = localStorage.getItem("user")
-    if (!stored) { router.push("/login"); return }
-    setUser(JSON.parse(stored))
+    if (!stored) { 
+      router.push("/login")
+      return 
+    }
+    const parsedUser = JSON.parse(stored)
+    setUser(parsedUser)
     fetchQuestions()
   }, [router])
 

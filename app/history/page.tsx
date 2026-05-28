@@ -74,7 +74,10 @@ export default function HistoryPage() {
 
   useEffect(() => {
     const stored = localStorage.getItem("user")
-    if (!stored) { router.push("/login"); return }
+    if (!stored) { 
+      router.push("/login")
+      return 
+    }
     fetchQuestions()
     const savedBookmarks = localStorage.getItem("bookmarks")
     if (savedBookmarks) setBookmarks(JSON.parse(savedBookmarks))

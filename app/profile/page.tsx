@@ -28,7 +28,10 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const stored = localStorage.getItem("user")
-    if (!stored) { router.push("/login"); return }
+    if (!stored) { 
+      router.push("/login")
+      return 
+    }
     const u = JSON.parse(stored) as User
     setUser(u)
     setForm(f => ({ ...f, name: u.name }))
