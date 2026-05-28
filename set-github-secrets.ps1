@@ -28,6 +28,19 @@ $secretNames = @(
   "FIREBASE_ADMIN_PRIVATE_KEY"
 )
 
+$ghExecutable = "gh"
+try {
+  Get-Command $ghExecutable -ErrorAction Stop | Out-Null
+} catch {
+  $possiblePortable = Join-Path $PSScriptRoot "gh-portable\bin\gh.exe"
+  if (Test-Path $possiblePortable) {
+    $ghExecutable = $possiblePortable
+  } else {
+    Write-Error "GitHub CLI executable not found in PATH or gh-portable/bin."
+    exit 1
+  }
+}
+
 if (-not (Test-Path $EnvFile)) {
   Write-Error "Environment file '$EnvFile' not found."
   exit 1
@@ -51,7 +64,7 @@ foreach ($secret in $secretNames) {
       Write-Host "[DRY RUN] Would set secret: $secret"
     } else {
       Write-Host "Setting secret: $secret"
-      gh secret set $secret --repo "$Owner/$Repo" --body "$value"
+      & $ghExecutable secret set $secret --repo "$Owner/$Repo" --body "$value"
     }
   } else {
     Write-Host "Skipping missing secret: $secret"
