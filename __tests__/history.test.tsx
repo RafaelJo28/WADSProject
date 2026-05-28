@@ -1,9 +1,18 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react"
+import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react"
 import { jest } from '@jest/globals'
 import HistoryPage from "@/app/history/page"
 
+// Mock useRouter properly
+const mockPush = jest.fn()
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: jest.fn() }),
+  useRouter: () => ({
+    push: mockPush,
+    back: jest.fn(),
+    forward: jest.fn(),
+    refresh: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+  }),
 }))
 
 jest.mock("@/app/components/Navbar", () => ({
@@ -16,6 +25,7 @@ jest.mock("@/app/components/Stars", () => ({
   default: () => <div data-testid="stars" />,
 }))
 
+// Reduced mock data to prevent memory issues
 const mockQuestions = [
   { id: "1", content: "What is photosynthesis?", subject: "Biology", status: "answered", createdAt: "2024-01-01" },
   { id: "2", content: "Solve x + 2 = 5", subject: "Math", status: "answered", createdAt: "2024-01-02" },
@@ -38,12 +48,18 @@ Object.defineProperty(window, "localStorage", { value: mockLocalStorage })
 describe("History Page", () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockPush.mockClear()
+    mockLocalStorage.clear()
     mockLocalStorage.setItem("user", JSON.stringify({ name: "John" }))
     mockLocalStorage.setItem("bookmarks", JSON.stringify([]))
     ;(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: true,
-      json: async () => mockQuestions,
+      json: async () => [...mockQuestions], // Spread to create new array
     } as unknown as Response)
+  })
+
+  afterEach(() => {
+    cleanup() // Clean up to prevent memory leaks
   })
 
   it("renders history heading", async () => {
@@ -105,7 +121,7 @@ describe("History Page", () => {
   it("deletes a question after confirmation", async () => {
     window.confirm = jest.fn(() => true)
     ;(fetch as jest.MockedFunction<typeof fetch>)
-      .mockResolvedValueOnce({ ok: true, json: async () => mockQuestions } as unknown as Response)
+      .mockResolvedValueOnce({ ok: true, json: async () => [...mockQuestions] } as unknown as Response)
       .mockResolvedValueOnce({ ok: true } as unknown as Response)
 
     render(<HistoryPage />)

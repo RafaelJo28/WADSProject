@@ -21,6 +21,13 @@ const config: Config = {
   testEnvironmentOptions: {
     customExportConditions: ["react-jsx"],
   },
+  // Memory optimizations
+  workerIdleMemoryLimit: "512MB",
+  maxWorkers: 2,
+  testTimeout: 30000,
+  // Prevent memory leaks
+  forceExit: true,
+  detectOpenHandles: true,
 }
 
 export default config

@@ -1,11 +1,19 @@
 import React from "react"
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import { jest } from '@jest/globals'
-import * as nextNavigation from "next/navigation"
 import Navbar from "@/app/components/Navbar"
 
+// Mock useRouter properly without spying
+const mockPush = jest.fn()
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: jest.fn() }),
+  useRouter: () => ({
+    push: mockPush,
+    back: jest.fn(),
+    forward: jest.fn(),
+    refresh: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+  }),
 }))
 
 jest.mock("next/link", () => ({
@@ -25,6 +33,8 @@ global.fetch = mockFetch
 describe("Navbar Component", () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockPush.mockClear()
+    mockFetch.mockClear()
   })
 
   it("renders Orbot logo and brand name", () => {
@@ -53,9 +63,7 @@ describe("Navbar Component", () => {
   })
 
   it("calls logout API and redirects on logout click", async () => {
-    const mockPush = jest.fn()
-    jest.spyOn(nextNavigation, "useRouter").mockReturnValue({ push: mockPush })
-    ;(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({ ok: true } as unknown as Response)
+    mockFetch.mockResolvedValueOnce({ ok: true } as unknown as Response)
 
     const mockLocalStorage = {
       removeItem: jest.fn(),
@@ -66,7 +74,9 @@ describe("Navbar Component", () => {
     fireEvent.click(screen.getByText("Logout"))
 
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith("/api/auth/logout", { method: "POST" })
+      expect(mockFetch).toHaveBeenCalledWith("/api/auth/logout", { method: "POST" })
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith("user")
+      expect(mockPush).toHaveBeenCalledWith("/login")
     })
   })
 })

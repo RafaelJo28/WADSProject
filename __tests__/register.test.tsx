@@ -1,10 +1,18 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import { jest } from '@jest/globals'
-import * as nextNavigation from "next/navigation"
 import RegisterPage from "@/app/register/page"
 
+// Mock useRouter properly without spying
+const mockPush = jest.fn()
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: jest.fn() }),
+  useRouter: () => ({
+    push: mockPush,
+    back: jest.fn(),
+    forward: jest.fn(),
+    refresh: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+  }),
 }))
 
 // mock OrbotLogo to avoid canvas context issues during tests
@@ -18,6 +26,7 @@ global.fetch = jest.fn() as unknown as jest.MockedFunction<typeof fetch>
 describe("Register Page", () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockPush.mockClear()
   })
 
   it("renders register form correctly", () => {
@@ -55,8 +64,6 @@ describe("Register Page", () => {
   })
 
   it("redirects to login on successful registration", async () => {
-    const mockPush = jest.fn()
-    jest.spyOn(nextNavigation, "useRouter").mockReturnValue({ push: mockPush })
     ;(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
       ok: true,
       json: async () => ({}),
@@ -74,6 +81,7 @@ describe("Register Page", () => {
     fireEvent.click(screen.getByText("Create Account →"))
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith("/api/auth/register", expect.any(Object))
+      expect(mockPush).toHaveBeenCalledWith("/login")
     })
   })
 
