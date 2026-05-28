@@ -19,7 +19,7 @@ const app =
       : getApps()[0]
     : undefined
 
-export const auth = app ? getAuth(app) : (null as any)
+export const auth = app ? getAuth(app) : null
 export const googleProvider = new GoogleAuthProvider()
 googleProvider.setCustomParameters({
   prompt: "select_account",

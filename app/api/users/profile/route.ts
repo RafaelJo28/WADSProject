@@ -49,7 +49,7 @@ export async function PUT(req: NextRequest) {
   if (!valid) return NextResponse.json({ error: "Current password is incorrect" }, { status: 400 })
 
 
-  const updateData: any = { name: trimmedName }
+  const updateData: { name: string; password?: string } = { name: trimmedName }
   if (newPassword) {
     updateData.password = await bcrypt.hash(newPassword, 12)
   }
