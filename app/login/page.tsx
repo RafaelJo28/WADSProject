@@ -38,6 +38,11 @@ export default function LoginPage() {
     setGoogleLoading(true)
     setError("")
     try {
+      if (!auth) {
+        setError("Firebase not initialized. Please try again.")
+        setGoogleLoading(false)
+        return
+      }
       const result = await signInWithPopup(auth, googleProvider)
       const idToken = await result.user.getIdToken()
 
@@ -54,9 +59,10 @@ export default function LoginPage() {
       } else {
         setError(data.error)
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as { message?: string }
       console.error("Google login error:", err)
-      setError(err?.message || "Google sign-in failed. Please try again.")
+      setError(error?.message || "Google sign-in failed. Please try again.")
     } finally {
       setGoogleLoading(false)
     }
@@ -120,14 +126,12 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px" style={{ background: "rgba(124, 58, 237, 0.3)" }} />
             <span className="text-gray-500 text-xs uppercase tracking-widest">or</span>
             <div className="flex-1 h-px" style={{ background: "rgba(124, 58, 237, 0.3)" }} />
           </div>
 
-          {/* Google Sign-In */}
           <button
             type="button"
             onClick={handleGoogleLogin}
@@ -151,7 +155,7 @@ export default function LoginPage() {
           </button>
 
           <p className="text-center text-sm text-gray-500 mt-6">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/register" className="text-purple-400 hover:text-purple-300 font-medium">Register</Link>
           </p>
         </div>

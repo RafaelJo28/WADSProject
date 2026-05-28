@@ -1,11 +1,11 @@
-// Polyfill fetch and related globals for Firebase auth in Node.js test environment
-const fetch = require('node-fetch')
-global.fetch = fetch
-global.Response = fetch.Response
-global.Request = fetch.Request
-global.Headers = fetch.Headers
+import fetch, { Response, Request, Headers } from 'node-fetch'
+import React from 'react'
 
-// Mock Next.js router
+global.fetch = fetch as unknown as typeof global.fetch
+global.Response = Response as unknown as typeof global.Response
+global.Request = Request as unknown as typeof global.Request
+global.Headers = Headers as unknown as typeof global.Headers
+
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: jest.fn(),
@@ -19,11 +19,8 @@ jest.mock('next/navigation', () => ({
   usePathname: () => '/',
 }))
 
-// Mock Next.js Link component
-jest.mock('next/link', () => {
-  const React = require('react')
-  return {
-    __esModule: true,
-    default: ({ children, href, ...props }: any) => React.createElement('a', { href, ...props }, children),
-  }
-})
+jest.mock('next/link', () => ({
+  __esModule: true,
+  default: ({ children, href, ...props }: { children: React.ReactNode; href: string; [key: string]: unknown }) => 
+    React.createElement('a', { href, ...props }, children),
+}))
