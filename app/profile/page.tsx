@@ -14,8 +14,17 @@ interface User {
 
 export default function ProfilePage() {
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
-  const [form, setForm] = useState({ name: "", currentPassword: "", newPassword: "" })
+  const [user, setUser] = useState<User | null>(() => {
+    if (typeof window === "undefined") return null
+    const stored = localStorage.getItem("user")
+    return stored ? (JSON.parse(stored) as User) : null
+  })
+  const [form, setForm] = useState(() => {
+    if (typeof window === "undefined") return { name: "", currentPassword: "", newPassword: "" }
+    const stored = localStorage.getItem("user")
+    const parsed = stored ? (JSON.parse(stored) as User) : null
+    return { name: parsed?.name ?? "", currentPassword: "", newPassword: "" }
+  })
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState("")
   const [error, setError] = useState("")
@@ -27,16 +36,17 @@ export default function ProfilePage() {
   }
 
   useEffect(() => {
-    const stored = localStorage.getItem("user")
-    if (!stored) { 
+    if (!user) {
       router.push("/login")
-      return 
+      return
     }
-    const u = JSON.parse(stored) as User
-    setUser(u)
-    setForm(f => ({ ...f, name: u.name }))
-    fetchStats()
-  }, [router])
+
+    const timer = window.setTimeout(() => {
+      fetchStats()
+    }, 0)
+
+    return () => window.clearTimeout(timer)
+  }, [router, user])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

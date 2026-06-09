@@ -24,7 +24,11 @@ export default function HistoryPage() {
   const [editing, setEditing] = useState<string | null>(null)
   const [editValue, setEditValue] = useState("")
   const [saving, setSaving] = useState(false)
-  const [bookmarks, setBookmarks] = useState<string[]>([])
+  const [bookmarks, setBookmarks] = useState<string[]>(() => {
+    if (typeof window === "undefined") return []
+    const savedBookmarks = localStorage.getItem("bookmarks")
+    return savedBookmarks ? JSON.parse(savedBookmarks) : []
+  })
   const [showBookmarked, setShowBookmarked] = useState(false)
 
   const fetchQuestions = async () => {
@@ -74,13 +78,16 @@ export default function HistoryPage() {
 
   useEffect(() => {
     const stored = localStorage.getItem("user")
-    if (!stored) { 
+    if (!stored) {
       router.push("/login")
-      return 
+      return
     }
-    fetchQuestions()
-    const savedBookmarks = localStorage.getItem("bookmarks")
-    if (savedBookmarks) setBookmarks(JSON.parse(savedBookmarks))
+
+    const timer = window.setTimeout(() => {
+      fetchQuestions()
+    }, 0)
+
+    return () => window.clearTimeout(timer)
   }, [router])
 
   const filtered = questions.filter(q => {
