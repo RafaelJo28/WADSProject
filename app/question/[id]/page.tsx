@@ -76,20 +76,25 @@ export default function QuestionPage() {
   const [fuLoading, setFuLoading] = useState(false)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
 
-  const fetchQuestion = async () => {
-    const res = await fetch(`/api/questions/${id}`)
-    if (res.ok) setQuestion(await res.json())
-    setLoading(false)
-  }
-
   const fetchFollowUps = async () => {
     const res = await fetch(`/api/questions/${id}/followup`)
     if (res.ok) setFollowUps(await res.json())
   }
 
   useEffect(() => {
-    void fetchQuestion()
-    void fetchFollowUps()
+    const loadQuestion = async () => {
+      const res = await fetch(`/api/questions/${id}`)
+      if (res.ok) setQuestion(await res.json())
+      setLoading(false)
+    }
+
+    const loadFollowUps = async () => {
+      const res = await fetch(`/api/questions/${id}/followup`)
+      if (res.ok) setFollowUps(await res.json())
+    }
+
+    void loadQuestion()
+    void loadFollowUps()
   }, [id])
 
   const handleReply = (label: string, content: string) => {
