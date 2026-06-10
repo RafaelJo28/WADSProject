@@ -122,4 +122,4 @@ This README serves as the submission for **Weekly Final Project Checkpoint 01**,
 - System architecture  
 
 Further features, testing, security implementation, AI testing, and deployment details
-will be completed and documented in later project checkpoints. Env Contents Below. 
+will be completed and documented in later project checkpoints. Env Contents Below.
