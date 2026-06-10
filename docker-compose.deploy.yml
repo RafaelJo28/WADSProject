@@ -16,5 +16,5 @@ services:
     env_file:
       - .env.production
     ports:
-      - "3080:3000"
+      - "3027:3000"
     restart: unless-stopped
