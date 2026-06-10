@@ -94,9 +94,11 @@ jobs:
         run: docker pull ${{ secrets.DOCKER_USERNAME }}/orbot:latest
 
       - name: Deploy app
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
-          docker compose pull app
-          docker compose up -d --no-deps app
+          docker compose --env-file .env.production -f docker-compose.deploy.yml down --remove-orphans
+          docker compose --env-file .env.production -f docker-compose.deploy.yml up -d --no-deps app
 
       - name: Cleanup
         if: always()
