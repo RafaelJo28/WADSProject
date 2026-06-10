@@ -112,6 +112,8 @@ jobs:
         run: docker compose --env-file .env.production -f docker-compose.deploy.yml pull app
 
       - name: Deploy app with Docker Compose
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: docker compose --env-file .env.production -f docker-compose.deploy.yml up -d --no-deps app
 
       - name: Cleanup temporary env file
