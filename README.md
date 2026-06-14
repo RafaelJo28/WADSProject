@@ -1,25 +1,25 @@
 # Final Project – Web Application Development and Security
 
-Course Name: Web Application Development and Security  
-Institution: BINUS University International  
+Course Name: Web Application Development and Security
+Institution: BINUS University International
 
 ---
 
 ## 1. Project Information
 
 Project Title:  
-Homework Question & Answer Assistant
+Orbot: Homework Question & Answer Assistant
 
 Project Domain:  
 Homework Question & Answer Assistant
 
-Class:  
+Class:
 - LEC: L4BC
 - LAB: B4BC
 
-Group Members:  
+Group Members:
 - Jovanney Rafael Husni – Backend & AI Implementing
-- Catherine Isabelle Ong – Frontend & UI  
+- Catherine Isabelle Ong – Frontend & UI
 
 ---
 
@@ -52,27 +52,48 @@ is securely integrated through backend APIs.
 ## 4. Technology Stack (Mandatory)
 
 Frontend:  
-- Next.js (React)
+- Next.js 16 (React 19)
+- TailwindCSS with TypeScript
+- React Hook Form for form management
+- Swagger UI for API documentation
 
 Backend:  
 - Node.js (Next.js API Routes)
+- Next-Auth for authentication
+- Firebase Admin SDK for additional auth support
 
 API:  
 - RESTful API (JSON)
+- Swagger/OpenAPI documentation
 
 Database:  
 - PostgreSQL with Prisma ORM
+- Neon Serverless PostgreSQL adapter
 
-AI:  
-- OCR for image-based questions  
-- NLP for question understanding and explanation generation
+AI Services:  
+- Google Generative AI for explanation generation
+- Groq SDK for alternative AI processing
+- OpenAI for additional AI capabilities
+- Tesseract.js for OCR (image-to-text conversion)
+
+Authentication:  
+- Firebase Authentication
+- Next-Auth with Prisma adapter
+- JWT token support
+- bcryptjs for password hashing
 
 Deployment:  
-- Docker and cloud-based hosting
+- Docker containerization (Node.js 20 Alpine)
+- Docker Compose for local and production environments
 
 Cloud Hosting:
-- Vercel (Frontend & API Deployment)
 - Managed PostgreSQL Service (Neon)
+- Docker-based deployment ready
+
+Testing:  
+- Jest testing framework
+- React Testing Library for component tests
+- TypeScript for type safety
 
 Version Control:  
 - GitHub
@@ -97,29 +118,18 @@ AI Services (OCR & NLP)
 
 ### 5.2 Architecture Explanation
 
-The frontend is implemented using Next.js and handles user interactions such as question
-submission and displaying results. All communication between the frontend and backend
-is performed using RESTful API calls.
+The frontend is implemented using Next.js 16 with React 19 and handles user interactions such as question submission, viewing answers, and tracking question history. All communication between the frontend and backend is performed using RESTful API calls. The UI is styled with TailwindCSS and uses React Hook Form for robust form validation.
 
-The backend is responsible for business logic, input validation, authentication, and
-database operations. AI services, including OCR and NLP-based explanation generation,
-are accessed only through the backend to ensure secure API key handling and controlled
-AI usage.
+The backend is responsible for business logic, input validation, authentication, and database operations. Multiple AI services (Google Generative AI, Groq, OpenAI) are integrated to provide flexible explanation generation capabilities. OCR processing via Tesseract.js converts image-based questions into text. All AI services are accessed only through the backend to ensure secure API key handling and controlled usage.
 
-The database stores user data, submitted questions, and solution history. Security
-controls such as input validation, rate limiting, and access control are enforced at
-the backend API layer to protect the system from misuse and attacks.
+Authentication is handled through Firebase Authentication and Next-Auth, with JWT token support and bcrypt password hashing for local authentication methods. User sessions are managed securely through Prisma adapter integration.
 
-The system follows a Modular Monolithic Architecture. All components are deployed as a single application, but internally structured into separate modules (API, AI service layer, database layer, authentication layer) to maintain scalability and maintainability.
+The database stores user profiles, submitted questions (with optional image URLs), generated answers, and follow-up Q&A threads. Data modeling includes User, Question, Answer, and FollowUp entities. Security controls such as input validation, access control, and secure authentication are enforced at the backend API layer.
+
+The system follows a Modular Monolithic Architecture. All components are deployed as a single Docker container, but internally structured into separate modules (REST API endpoints, AI service layer, database layer with Prisma ORM, authentication layer with Firebase/Next-Auth) to maintain scalability and maintainability. The application supports both local development and cloud deployment via Docker Compose.
 
 ---
 
 ## Notes
 
-This README serves as the submission for **Weekly Final Project Checkpoint 01**, covering:
-- Project selection  
-- Technology stack  
-- System architecture  
-
-Further features, testing, security implementation, AI testing, and deployment details
-will be completed and documented in later project checkpoints. Env Contents Below.
+This README now reflects the current implementation, including authentication, OCR-based question entry, AI-driven explanation generation, follow-up threading, and user dashboard/history management.

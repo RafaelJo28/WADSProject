@@ -32,15 +32,20 @@ export default function Stars({ count = 60 }: { count?: number }) {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       {stars.map((s, i) => (
-        <div key={i} className="absolute rounded-full bg-white" style={{
-          width: s.width + "px",
-          height: s.height + "px",
-          top: s.top + "%",
-          left: s.left + "%",
-          opacity: s.opacity,
-          animation: `twinkle ${s.duration}s ease-in-out infinite`,
-          animationDelay: s.delay + "s",
-        }} />
+        <div 
+          key={i} 
+          className="absolute rounded-full bg-white" 
+          suppressHydrationWarning
+          style={{
+            width: s.width + "px",
+            height: s.height + "px",
+            top: s.top + "%",
+            left: s.left + "%",
+            opacity: s.opacity,
+            animation: `twinkle ${s.duration}s ease-in-out infinite`,
+            animationDelay: s.delay + "s",
+          }} 
+        />
       ))}
       <style>{`
         @keyframes twinkle {

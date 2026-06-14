@@ -68,13 +68,17 @@ export async function POST(req: NextRequest) {
       model: "llama-3.3-70b-versatile",
       messages: [{
         role: "user",
-        content: `You are a helpful homework tutor. A student has asked the following ${subject} question:
+        content: `You are a helpful homework tutor. A student has submitted the following question under the subject "${trimmedSubject}":
 
 
-"${content}"
+"${trimmedContent}"
 
 
-Please provide a clear, step-by-step explanation to help the student understand the solution.
+IMPORTANT: First, check if this question actually falls under the subject "${trimmedSubject}". 
+- If the question does NOT match the subject, start your response with: "This question doesn't fall under ${trimmedSubject}."
+- If the question DOES match the subject, proceed normally.
+
+After the subject check, provide a clear, step-by-step explanation to help the student understand the solution.
 Format your response with numbered steps. Be encouraging and educational.`,
       }],
     })

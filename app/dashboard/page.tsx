@@ -18,6 +18,12 @@ export default function DashboardPage() {
   const router = useRouter()
   const [questions, setQuestions] = useState<Question[]>([])
   const [loading, setLoading] = useState(true)
+  const [bookmarks, setBookmarks] = useState<string[]>(() => {
+    if (typeof window === "undefined") return []
+    const saved = localStorage.getItem("bookmarks")
+    return saved ? JSON.parse(saved) : []
+  })
+  const [showBookmarked, setShowBookmarked] = useState(false)
   const [user] = useState<{ name: string; email: string } | null>(() => {
     if (typeof window === "undefined") return null
     const stored = localStorage.getItem("user")
@@ -38,6 +44,14 @@ export default function DashboardPage() {
 
     void loadQuestions()
   }, [router, user])
+
+  const toggleBookmark = (id: string) => {
+    const newBookmarks = bookmarks.includes(id) ? bookmarks.filter(b => b !== id) : [...bookmarks, id]
+    setBookmarks(newBookmarks)
+    localStorage.setItem("bookmarks", JSON.stringify(newBookmarks))
+  }
+
+  const filtered = showBookmarked ? questions.filter(q => bookmarks.includes(q.id)) : questions
 
   return (
     <div className="min-h-screen relative overflow-hidden"
@@ -82,9 +96,29 @@ export default function DashboardPage() {
         <div className="rounded-2xl border border-purple-900/30 backdrop-blur-sm overflow-hidden"
           style={{ background: "rgba(15, 5, 40, 0.7)" }}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-4 sm:px-6 py-5 border-b border-purple-900/30">
-            <h2 className="text-lg font-bold text-white" style={{ fontFamily: "var(--font-orbitron)" }}>
-              Recent Questions
-            </h2>
+            <div className="flex items-center gap-4">
+              <h2 className="text-lg font-bold text-white" style={{ fontFamily: "var(--font-orbitron)" }}>
+                Recent Questions
+              </h2>
+              <button onClick={() => setShowBookmarked(!showBookmarked)}
+                className="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium transition-all hover:scale-105"
+                style={showBookmarked ? {
+                  background: "linear-gradient(135deg, #eab308, #f59e0b)",
+                  color: "white",
+                } : {
+                  background: "rgba(255,255,255,0.02)",
+                  color: "#a78bfa",
+                  border: "1px solid rgba(124, 58, 237, 0.15)",
+                }}>
+                {showBookmarked ? "⭐ Bookmarked" : "☆ Bookmarks"}
+                {bookmarks.length > 0 && (
+                  <span className="text-xs px-2 py-0.5 rounded-full font-bold bg-purple-900/50 text-purple-300">
+                    {bookmarks.length}
+                  </span>
+                )}
+              </button>
+            </div>
+
             <Link href="/ask"
               className="w-full sm:w-auto px-4 py-2 rounded-xl text-sm font-bold text-white text-center transition-all hover:scale-105"
               style={{
@@ -111,6 +145,7 @@ export default function DashboardPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left border-b border-purple-900/20">
+                  <th className="px-4 py-4 text-gray-500 font-medium w-8"></th>
                   <th className="px-6 py-4 text-gray-500 font-medium">Question</th>
                   <th className="px-6 py-4 text-gray-500 font-medium">Subject</th>
                   <th className="px-6 py-4 text-gray-500 font-medium">Status</th>
@@ -119,8 +154,14 @@ export default function DashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {questions.map(q => (
+                {filtered.map(q => (
                   <tr key={q.id} className="border-b border-purple-900/10 hover:bg-purple-900/10 transition-colors">
+                    <td className="px-4 py-4">
+                      <button onClick={() => toggleBookmark(q.id)}
+                        className="text-xl hover:scale-110 transition-transform">
+                        {bookmarks.includes(q.id) ? "⭐" : "☆"}
+                      </button>
+                    </td>
                     <td className="px-6 py-4 text-gray-300 max-w-xs truncate">{q.content}</td>
                     <td className="px-6 py-4">
                       <span className="text-xs px-3 py-1 rounded-full border border-purple-700/50 text-purple-300"

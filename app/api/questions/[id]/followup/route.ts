@@ -81,15 +81,19 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       messages: [
         {
           role: "user",
-          content: `A student was studying this question: "${parent.content}"
+          content: `A student was studying this question in the subject "${parent.subject}": "${parent.content}"
          
 The AI gave this explanation: "${parent.answer?.content}"
 
 
-The student now asks: "${trimmedQuestion}"
+The student now asks a follow-up: "${trimmedQuestion}"
 
 
-Please answer this follow-up clearly and helpfully.`,
+IMPORTANT: First, check if this follow-up question is related to the subject "${parent.subject}".
+- If the follow-up question does NOT fall under "${parent.subject}", start your response with: "This question doesn't fall under ${parent.subject}."
+- If the follow-up question DOES relate to the subject, proceed normally.
+
+After the subject check, please answer this follow-up clearly and helpfully.`,
         },
       ],
     })
