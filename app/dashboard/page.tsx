@@ -20,19 +20,28 @@ export default function DashboardPage() {
   const router = useRouter()
   const [questions, setQuestions] = useState<Question[]>([])
   const [loading, setLoading] = useState(true)
-  const [bookmarks, setBookmarks] = useState<string[]>(() => {
-    if (typeof window === "undefined") return []
-    const saved = localStorage.getItem("bookmarks")
-    return saved ? JSON.parse(saved) : []
-  })
   const [showBookmarked, setShowBookmarked] = useState(false)
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([])
   const [subjectDropdownOpen, setSubjectDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+
   const [user] = useState<{ name: string; email: string } | null>(() => {
     if (typeof window === "undefined") return null
     const stored = localStorage.getItem("user")
     return stored ? JSON.parse(stored) : null
+  })
+
+  const bookmarkKey = user ? `bookmarks:${user.email}` : "bookmarks"
+
+  const [bookmarks, setBookmarks] = useState<string[]>(() => {
+    if (typeof window === "undefined") return []
+    const key = (() => {
+      const stored = localStorage.getItem("user")
+      const u = stored ? JSON.parse(stored) : null
+      return u ? `bookmarks:${u.email}` : "bookmarks"
+    })()
+    const saved = localStorage.getItem(key)
+    return saved ? JSON.parse(saved) : []
   })
 
   useEffect(() => {
@@ -63,7 +72,7 @@ export default function DashboardPage() {
   const toggleBookmark = (id: string) => {
     const newBookmarks = bookmarks.includes(id) ? bookmarks.filter(b => b !== id) : [...bookmarks, id]
     setBookmarks(newBookmarks)
-    localStorage.setItem("bookmarks", JSON.stringify(newBookmarks))
+    localStorage.setItem(bookmarkKey, JSON.stringify(newBookmarks))
   }
 
   const toggleSubject = (subject: string) => {
@@ -116,7 +125,7 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        <div className="rounded-2xl border border-purple-900/30 backdrop-blur-sm overflow-visible"
+        <div className="rounded-2xl border border-purple-900/30 backdrop-blur-sm overflow-hidden"
           style={{ background: "rgba(15, 5, 40, 0.7)" }}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-4 sm:px-6 py-5 border-b border-purple-900/30">
             <div className="flex items-center gap-4">
@@ -156,29 +165,13 @@ export default function DashboardPage() {
             <p className="text-gray-500 text-sm p-6">Loading...</p>
           ) : questions.length === 0 ? (
             <div className="text-center py-16">
-              <p className="text-5xl mb-4">
-                {showBookmarked ? "⭐" : selectedSubjects.length > 0 ? "🔍" : "🤔"}
-              </p>
-
-              <p className="text-gray-500 mb-6">
-                {showBookmarked
-                  ? "No bookmarked questions found."
-                  : selectedSubjects.length > 0
-                  ? "No questions found for the selected subject(s)."
-                  : "No questions yet. Ask your first one!"}
-              </p>
-
-              {!showBookmarked && selectedSubjects.length === 0 && (
-                <Link
-                  href="/ask"
-                  className="px-6 py-3 rounded-xl text-sm font-bold text-white inline-block transition-all hover:scale-105"
-                  style={{
-                    background: "linear-gradient(135deg, #7c3aed, #ec4899)",
-                  }}
-                >
-                  Ask a Question
-                </Link>
-              )}
+              <p className="text-5xl mb-4">🤔</p>
+              <p className="text-gray-500 mb-6">No questions yet. Ask your first one!</p>
+              <Link href="/ask"
+                className="px-6 py-3 rounded-xl text-sm font-bold text-white inline-block transition-all hover:scale-105"
+                style={{ background: "linear-gradient(135deg, #7c3aed, #ec4899)" }}>
+                Ask a Question
+              </Link>
             </div>
           ) : (
             <table className="w-full text-sm">
@@ -246,76 +239,41 @@ export default function DashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="py-16">
-                      <div className="text-center">
-                        <p className="text-5xl mb-4">
-                          {showBookmarked ? "⭐" : selectedSubjects.length > 0 ? "🔍" : "🤔"}
-                        </p>
-
-                        <p className="text-gray-500">
-                          {showBookmarked
-                            ? "No bookmarked questions found."
-                            : selectedSubjects.length > 0
-                            ? "No questions found for the selected subject(s)."
-                            : "No questions yet. Ask your first one!"}
-                        </p>
-                      </div>
+                {filtered.map(q => (
+                  <tr key={q.id} className="border-b border-purple-900/10 hover:bg-purple-900/10 transition-colors">
+                    <td className="px-4 py-4">
+                      <button onClick={() => toggleBookmark(q.id)}
+                        className="text-xl hover:scale-110 transition-transform">
+                        {bookmarks.includes(q.id) ? "⭐" : "☆"}
+                      </button>
+                    </td>
+                    <td className="px-6 py-4 text-gray-300 max-w-xs truncate">{q.content}</td>
+                    <td className="px-6 py-4">
+                      <span className="text-xs px-3 py-1 rounded-full border border-purple-700/50 text-purple-300"
+                        style={{ background: "rgba(124, 58, 237, 0.15)" }}>
+                        {q.subject}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        q.status === "answered"
+                          ? "bg-pink-900/30 text-pink-400 border border-pink-700/30"
+                          : "bg-blue-900/30 text-blue-400 border border-blue-700/30"
+                      }`}>
+                        {q.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-gray-600 text-xs">
+                      {new Date(q.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <Link href={`/question/${q.id}`}
+                        className="text-purple-400 hover:text-purple-300 font-medium transition-colors">
+                        View →
+                      </Link>
                     </td>
                   </tr>
-                ) : (
-                  filtered.map(q => (
-                    <tr key={q.id} className="border-b border-purple-900/10 hover:bg-purple-900/10 transition-colors">
-                      <td className="px-4 py-4">
-                        <button
-                          onClick={() => toggleBookmark(q.id)}
-                          className="text-xl hover:scale-110 transition-transform"
-                        >
-                          {bookmarks.includes(q.id) ? "⭐" : "☆"}
-                        </button>
-                      </td>
-
-                      <td className="px-6 py-4 text-gray-300 max-w-xs truncate">
-                        {q.content}
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <span
-                          className="text-xs px-3 py-1 rounded-full border border-purple-700/50 text-purple-300"
-                          style={{ background: "rgba(124, 58, 237, 0.15)" }}
-                        >
-                          {q.subject}
-                        </span>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            q.status === "answered"
-                              ? "bg-pink-900/30 text-pink-400 border border-pink-700/30"
-                              : "bg-blue-900/30 text-blue-400 border border-blue-700/30"
-                          }`}
-                        >
-                          {q.status}
-                        </span>
-                      </td>
-
-                      <td className="px-6 py-4 text-gray-600 text-xs">
-                        {new Date(q.createdAt).toLocaleDateString()}
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <Link
-                          href={`/question/${q.id}`}
-                          className="text-purple-400 hover:text-purple-300 font-medium transition-colors"
-                        >
-                          View →
-                        </Link>
-                      </td>
-                    </tr>
-                  ))
-                )}
+                ))}
               </tbody>
             </table>
           )}

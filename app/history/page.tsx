@@ -24,12 +24,26 @@ export default function HistoryPage() {
   const [editing, setEditing] = useState<string | null>(null)
   const [editValue, setEditValue] = useState("")
   const [saving, setSaving] = useState(false)
+  const [showBookmarked, setShowBookmarked] = useState(false)
+
+  const [user] = useState<{ name: string; email: string } | null>(() => {
+    if (typeof window === "undefined") return null
+    const stored = localStorage.getItem("user")
+    return stored ? JSON.parse(stored) : null
+  })
+
+  const bookmarkKey = user ? `bookmarks:${user.email}` : "bookmarks"
+
   const [bookmarks, setBookmarks] = useState<string[]>(() => {
     if (typeof window === "undefined") return []
-    const savedBookmarks = localStorage.getItem("bookmarks")
-    return savedBookmarks ? JSON.parse(savedBookmarks) : []
+    const key = (() => {
+      const stored = localStorage.getItem("user")
+      const u = stored ? JSON.parse(stored) : null
+      return u ? `bookmarks:${u.email}` : "bookmarks"
+    })()
+    const saved = localStorage.getItem(key)
+    return saved ? JSON.parse(saved) : []
   })
-  const [showBookmarked, setShowBookmarked] = useState(false)
 
   const fetchQuestions = async () => {
     const res = await fetch("/api/questions")
@@ -45,7 +59,7 @@ export default function HistoryPage() {
       setQuestions(prev => prev.filter(q => q.id !== id))
       const newBookmarks = bookmarks.filter(b => b !== id)
       setBookmarks(newBookmarks)
-      localStorage.setItem("bookmarks", JSON.stringify(newBookmarks))
+      localStorage.setItem(bookmarkKey, JSON.stringify(newBookmarks))
     }
     setDeleting(null)
   }
@@ -55,7 +69,7 @@ export default function HistoryPage() {
       ? bookmarks.filter(b => b !== id)
       : [...bookmarks, id]
     setBookmarks(newBookmarks)
-    localStorage.setItem("bookmarks", JSON.stringify(newBookmarks))
+    localStorage.setItem(bookmarkKey, JSON.stringify(newBookmarks))
   }
 
   const startEdit = (q: Question) => { setEditing(q.id); setEditValue(q.content) }
@@ -77,8 +91,7 @@ export default function HistoryPage() {
   }
 
   useEffect(() => {
-    const stored = localStorage.getItem("user")
-    if (!stored) {
+    if (!user) {
       router.push("/login")
       return
     }
@@ -88,7 +101,7 @@ export default function HistoryPage() {
     }, 0)
 
     return () => window.clearTimeout(timer)
-  }, [router])
+  }, [router, user])
 
   const filtered = questions.filter(q => {
     const matchesSearch = q.content.toLowerCase().includes(search.toLowerCase()) ||
@@ -139,7 +152,6 @@ export default function HistoryPage() {
         </div>
         <p className="text-gray-500 mb-8">All your submitted questions</p>
 
-        {/* Filters */}
         <div className="flex gap-4 mb-6">
           <input type="text" placeholder="Search questions..."
             value={search} onChange={e => setSearch(e.target.value)}
@@ -154,7 +166,6 @@ export default function HistoryPage() {
           </select>
         </div>
 
-        {/* Table */}
         <div className="rounded-2xl border border-purple-900/30 backdrop-blur-sm overflow-hidden"
           style={{ background: "rgba(15, 5, 40, 0.7)" }}>
           {loading ? (
