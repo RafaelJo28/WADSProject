@@ -81,6 +81,17 @@ export default function LoginPage() {
           style={{ background: "radial-gradient(circle, #ec4899, transparent)" }} />
       </div>
 
+      <Link href="/"
+        className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-purple-300 hover:text-white transition-all hover:scale-105"
+        style={{
+          background: "rgba(124, 58, 237, 0.2)",
+          border: "1px solid rgba(124, 58, 237, 0.4)",
+          fontFamily: "var(--font-orbitron)",
+        }}>
+        <span>←</span>
+        <span>Back</span>
+      </Link>
+
       <div className="relative z-10 w-full max-w-md px-6">
         <div className="flex flex-col items-center mb-8">
           <OrbotLogo size={72} />
