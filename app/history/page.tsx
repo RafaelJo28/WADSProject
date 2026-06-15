@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Navbar from "../components/Navbar"
@@ -30,6 +30,8 @@ export default function HistoryPage() {
     return savedBookmarks ? JSON.parse(savedBookmarks) : []
   })
   const [showBookmarked, setShowBookmarked] = useState(false)
+  const [filterDropdownOpen, setFilterDropdownOpen] = useState(false)
+  const filterDropdownRef = useRef<HTMLDivElement>(null)
 
   const fetchQuestions = async () => {
     const res = await fetch("/api/questions")
@@ -90,6 +92,23 @@ export default function HistoryPage() {
     return () => window.clearTimeout(timer)
   }, [router])
 
+  useEffect(() => {
+  const handleClickOutside = (e: MouseEvent) => {
+    if (
+      filterDropdownRef.current &&
+      !filterDropdownRef.current.contains(e.target as Node)
+    ) {
+      setFilterDropdownOpen(false)
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside)
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside)
+  }
+}, [])
+
   const filtered = questions.filter(q => {
     const matchesSearch = q.content.toLowerCase().includes(search.toLowerCase()) ||
       q.subject.toLowerCase().includes(search.toLowerCase())
@@ -141,21 +160,87 @@ export default function HistoryPage() {
 
         {/* Filters */}
         <div className="flex gap-4 mb-6">
-          <input type="text" placeholder="Search questions..."
-            value={search} onChange={e => setSearch(e.target.value)}
+          <input
+            type="text"
+            placeholder="Search questions..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
             className="flex-1 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 border border-purple-900/40"
-            style={{ background: "rgba(255,255,255,0.05)" }} />
-          <select value={filter} onChange={e => setFilter(e.target.value)}
-            className="rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 border border-purple-900/40"
-            style={{ background: "rgba(15, 5, 40, 0.9)" }}>
-            <option value="all">All</option>
-            <option value="answered">Answered</option>
-            <option value="pending">Pending</option>
-          </select>
+            style={{ background: "rgba(255,255,255,0.05)" }}
+          />
+
+          <div className="relative" ref={filterDropdownRef}>
+            <button
+              onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
+              className="rounded-xl px-4 py-3 text-sm border border-purple-900/40 flex items-center justify-between gap-2 min-w-[180px] transition-colors"
+              style={{
+                background: "rgba(15, 5, 40, 0.9)",
+                color: filter === "all" ? "#9ca3af" : "#a78bfa",
+              }}
+            >
+              <span>
+                {filter === "all"
+                  ? "All"
+                  : filter.charAt(0).toUpperCase() + filter.slice(1)}
+              </span>
+
+              <span className="text-xs">
+                {filterDropdownOpen ? "▲" : "▼"}
+              </span>
+            </button>
+
+            {filterDropdownOpen && (
+              <div
+                className="absolute top-full left-0 mt-2 w-full rounded-xl border border-purple-900/50 shadow-xl z-50 overflow-hidden"
+                style={{ background: "rgba(15, 5, 40, 0.97)" }}
+              >
+                {[
+                  { value: "all", label: "All" },
+                  { value: "answered", label: "Answered" },
+                  { value: "pending", label: "Pending" },
+                ].map(option => (
+                  <button
+                    key={option.value}
+                    onClick={() => {
+                      setFilter(option.value)
+                      setFilterDropdownOpen(false)
+                    }}
+                    className="w-full text-left px-4 py-3 text-sm transition-colors flex items-center gap-2"
+                    style={
+                      filter === option.value
+                        ? {
+                            background: "rgba(124, 58, 237, 0.25)",
+                            color: "#c4b5fd",
+                          }
+                        : {
+                            color: "#9ca3af",
+                          }
+                    }
+                    onMouseEnter={e => {
+                      if (filter !== option.value) {
+                        e.currentTarget.style.background =
+                          "rgba(124, 58, 237, 0.1)"
+                      }
+                    }}
+                    onMouseLeave={e => {
+                      if (filter !== option.value) {
+                        e.currentTarget.style.background = "transparent"
+                      }
+                    }}
+                  >
+                    <span className="w-4 text-xs">
+                      {filter === option.value ? "✓" : ""}
+                    </span>
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Table */}
-        <div className="rounded-2xl border border-purple-900/30 backdrop-blur-sm overflow-hidden"
+        <div className="rounded-2xl border border-purple-900/30 backdrop-blur-sm overflow-visible"
           style={{ background: "rgba(15, 5, 40, 0.7)" }}>
           {loading ? (
             <p className="text-gray-500 text-sm p-6">Loading...</p>
