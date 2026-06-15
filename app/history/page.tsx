@@ -172,7 +172,7 @@ export default function HistoryPage() {
           <div className="relative" ref={filterDropdownRef}>
             <button
               onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
-              className="rounded-xl px-4 py-3 text-sm border border-purple-900/40 flex items-center justify-between gap-2 min-w-[180px] transition-colors"
+              className="rounded-xl px-4 py-3 text-sm border border-purple-900/40 flex items-center justify-between gap-2 min-w-45 transition-colors"
               style={{
                 background: "rgba(15, 5, 40, 0.9)",
                 color: filter === "all" ? "#9ca3af" : "#a78bfa",
