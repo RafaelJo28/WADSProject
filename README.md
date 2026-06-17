@@ -209,7 +209,8 @@ OCR image text extraction Convert uploaded question images into searchable text 
 * Protection against XSS: React escapes rendered content and no unsafe innerHTML is used.
 * Protection against CSRF: same-origin requests and `SameSite=Lax` cookie settings reduce CSRF risk.
 * Secure API key handling: AI keys and Firebase credentials are kept in environment variables and only used on the server.
-
+* Rate limiting: IP/user-based rate limiting applied to all sensitive endpoints using `rate-limiter-flexible` — login and register (10 req/15 min), question submission (20 req/hr), follow-up questions (30 req/hr), and OCR uploads (10 req/hr) — to prevent brute force and abuse.
+* Secure image upload handling: `/api/ocr` validates the uploaded file's MIME type against an allowlist (JPEG, PNG, WebP, GIF) and enforces a 5MB size limit before processing, preventing malicious or oversized file uploads.
 ---
 
 ## 10. Testing Documentation (VERY IMPORTANT)
@@ -231,6 +232,11 @@ API-02 POST /api/questions Valid homework prompt AI answer generated Pass
 Test Case Attack Type Expected Behavior Result
 SEC-01 XSS Attempt to inject script Input is escaped and not executed Pass
 SEC-02 SQL injection Attempt to inject SQL Query is blocked by ORM Pass
+SEC-03 Rate limiting (auth) Exceed 10 login attempts in 15 min 11th request blocked with 429 Pass
+SEC-04 Rate limiting (questions) Exceed 20 question submissions in 1 hr 21st request blocked with 429 Pass
+SEC-05 Rate limiting (OCR) Exceed 10 OCR uploads in 1 hr 11th request blocked with 429 Pass
+SEC-06 Invalid file upload Upload non-image file to /api/ocr 400 Invalid file type returned Pass
+SEC-07 Oversized file upload Upload file >5MB to /api/ocr 400 File too large returned Pass
 
 ### 10.4 AI Functionality Testing (MANDATORY)
 
@@ -288,6 +294,8 @@ Student Name: Catherine Isabelle Ong
   - Client-side validation
   - Secure request handling
   - Ensuring public vs private env vars are split correctly
+  - Rate limiting on all sensitive endpoints using rate-limiter-flexible (auth, questions, follow-ups, OCR)
+  - Rate limit tests written in __tests__/ratelimit.test.ts
 * AI-related work:
   - Follow-up question UI flow
   - Explanation presentation and UX for AI responses
@@ -314,6 +322,7 @@ Student Name: Jovanney Rafael Husni
   - Protected user routes and resource ownership
   - Server-side-only env var handling for Firebase and Groq
   - Input validation and secure API key handling
+  - Secure image upload handling: MIME type allowlist and 5MB size cap on /api/ocr
 * AI-related work:
   - Groq Llama 3.3 70B prompt engineering and answer formatting
   - Follow-up context preservation
