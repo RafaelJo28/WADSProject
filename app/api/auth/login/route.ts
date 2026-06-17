@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server"
+import { authLimiter, getIP, applyRateLimit } from "@/app/lib/rateLimiter";
 import { db } from "@/app/lib/db"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 
 
 export async function POST(req: NextRequest) {
+  const ip = getIP(req);
+  const rateLimitResponse = await applyRateLimit(authLimiter, ip, req);
+  if (rateLimitResponse) return rateLimitResponse;
   try {
     const { email, password } = await req.json()
 
