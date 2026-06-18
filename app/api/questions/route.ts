@@ -1,3 +1,6 @@
+// Question API route handles two responsibilities:
+// - GET: return a list of questions submitted by the authenticated user.
+// - POST: create a new question record, call the AI service, and store the generated answer.
 import { NextRequest, NextResponse } from "next/server"
 import { questionLimiter, applyRateLimit } from "@/app/lib/rateLimiter";
 import { db } from "@/app/lib/db"

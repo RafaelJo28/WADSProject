@@ -1,3 +1,5 @@
+// OCR route: validates the authenticated user, applies per-user rate limiting,
+// verifies uploaded image metadata, and performs text extraction with Tesseract.
 import { NextRequest, NextResponse } from "next/server"
 import { ocrLimiter, applyRateLimit } from "@/app/lib/rateLimiter"
 import { createWorker } from "tesseract.js"

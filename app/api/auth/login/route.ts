@@ -1,3 +1,5 @@
+// Login endpoint: authenticates users via email/password, enforces IP rate limiting,
+// verifies credentials with bcrypt, and returns a JWT cookie for session auth.
 import { NextRequest, NextResponse } from "next/server"
 import { authLimiter, getIP, applyRateLimit } from "@/app/lib/rateLimiter";
 import { db } from "@/app/lib/db"

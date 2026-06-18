@@ -1,3 +1,5 @@
+// Server-side Firebase Admin initialization used for verifying Google ID tokens.
+// This helper supports a real service account in production and a safe stub during build.
 import { initializeApp, getApps, cert } from "firebase-admin/app"
 import { getAuth } from "firebase-admin/auth"
 

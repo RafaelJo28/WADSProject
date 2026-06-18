@@ -1,5 +1,7 @@
 "use client"
 
+// Small animated canvas logo component used in the header and auth pages.
+// It draws a glowing orb and a rotating ring to create a futuristic brand mark.
 import { useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 

@@ -1,3 +1,4 @@
+// Logout endpoint: clears the authentication cookie for the current session.
 import { NextResponse } from "next/server"
 
 export async function POST() {

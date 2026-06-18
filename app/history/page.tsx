@@ -1,5 +1,7 @@
 "use client"
 
+// History page: shows all past questions submitted by the user,
+// allows searching, filtering, bookmarks, editing, and deleting.
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"

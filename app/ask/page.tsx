@@ -1,5 +1,7 @@
 "use client"
 
+// Ask page: allows authenticated users to submit a homework question, optionally upload an image,
+// run client-side OCR, and send the final question to the backend AI question endpoint.
 import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Navbar from "../components/Navbar"

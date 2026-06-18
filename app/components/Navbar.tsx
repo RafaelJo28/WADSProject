@@ -1,5 +1,7 @@
 "use client"
 
+// Shared navigation bar used across authenticated pages.
+// It displays primary app links and a logout button that clears the auth cookie.
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import OrbotLogo from "./OrbotLogo"

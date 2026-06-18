@@ -1,5 +1,7 @@
 "use client"
 
+// Question detail page: loads a single question and its AI answer, displays follow-up thread,
+// and lets the user submit follow-up questions to continue the conversation.
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import ReactMarkdown from "react-markdown"

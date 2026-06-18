@@ -1,3 +1,5 @@
+// Client-side Firebase configuration for Google sign-in.
+// This file initializes Firebase only in the browser and exports auth helpers.
 import { initializeApp, getApps } from "firebase/app"
 import { getAuth, GoogleAuthProvider } from "firebase/auth"
 

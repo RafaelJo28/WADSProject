@@ -1,3 +1,6 @@
+// OpenAPI specification builder for the app.
+// This file defines the structure, request/response formats, and security details
+// exposed by the Swagger documentation endpoint.
 import swaggerJsdoc from "swagger-jsdoc"
 
 const options: swaggerJsdoc.Options = {

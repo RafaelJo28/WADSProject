@@ -1,3 +1,4 @@
+// Profile update route: checks JWT auth, validates current password, and allows name/password updates.
 import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/app/lib/db"
 import jwt from "jsonwebtoken"

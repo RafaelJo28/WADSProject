@@ -1,5 +1,7 @@
 "use client"
 
+// Dashboard page: displays the current user's recent questions, lets them filter/bookmark
+// questions, and provides a quick path to submit a new request.
 import { useEffect, useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"

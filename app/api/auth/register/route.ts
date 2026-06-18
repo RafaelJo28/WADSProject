@@ -1,3 +1,5 @@
+// Registration endpoint: validates user input, hashes the password, and creates a new user record.
+// It also uses rate limiting to protect against abuse from the same IP.
 import { NextRequest, NextResponse } from "next/server"
 import { authLimiter, getIP, applyRateLimit } from "@/app/lib/rateLimiter";
 import { db } from "@/app/lib/db"

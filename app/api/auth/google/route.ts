@@ -1,3 +1,5 @@
+// Google auth route: verifies Firebase ID tokens, creates or finds a matching user,
+// then issues the same JWT cookie used by normal email/password login.
 import { NextRequest, NextResponse } from "next/server"
 import { adminAuth } from "@/app/lib/firebase-admin"
 import { db } from "@/app/lib/db"

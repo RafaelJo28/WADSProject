@@ -1,3 +1,5 @@
+// Root layout for the whole application.
+// This file sets the global HTML structure, loads font styles, and applies the shared stylesheet.
 import type { Metadata } from "next"
 import { Orbitron, Inter } from "next/font/google"
 import "./globals.css"

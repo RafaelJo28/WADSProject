@@ -1,5 +1,7 @@
 "use client"
 
+// Landing page for the app. This file handles the animated canvas backgrounds
+// and displays the first impression for the user before they log in or ask questions.
 import { useRouter } from "next/navigation"
 import { useEffect, useRef } from "react"
 import Stars from "./components/Stars"

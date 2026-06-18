@@ -1,3 +1,5 @@
+// Prisma database client configuration. This file initializes the client once and reuses it
+// across hot reloads in development to avoid creating multiple database connections.
 import { PrismaClient } from "@prisma/client"
 import { PrismaNeon } from "@prisma/adapter-neon"
 

@@ -1,3 +1,5 @@
+// Follow-up route supports thread-style follow-up questions for a specific question.
+// It validates the user, rate-limits follow-up submissions, and uses the AI completion service.
 import { NextRequest, NextResponse } from "next/server"
 import { followUpLimiter, applyRateLimit } from "@/app/lib/rateLimiter"
 import { db } from "@/app/lib/db"

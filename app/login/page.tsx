@@ -1,5 +1,7 @@
 "use client"
 
+// Login page: handles email/password login and Google OAuth sign-in.
+// Successful sign-in stores the user in localStorage and redirects to the dashboard.
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"

@@ -1,5 +1,7 @@
 "use client"
 
+// API documentation page: loads the Swagger/OpenAPI spec from the backend
+// and renders it using the Swagger UI component.
 import { useEffect, useState } from "react"
 import SwaggerUI from "swagger-ui-react"
 import "swagger-ui-react/swagger-ui.css"

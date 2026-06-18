@@ -1,5 +1,7 @@
 "use client"
 
+// Decorative starfield used as a reusable background effect.
+// Generates a random set of small animated stars when the component loads.
 import { useState } from "react"
 
 type Star = {

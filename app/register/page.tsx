@@ -1,5 +1,7 @@
 "use client"
 
+// Register page: collects name, email, and password and creates a new user account.
+// It then redirects the user to login after successful registration.
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"

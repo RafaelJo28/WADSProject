@@ -1,3 +1,5 @@
+// Route for operations on a single question.
+// Includes fetching the question with its answer, deleting the question, and updating the question text.
 import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/app/lib/db"
 import jwt from "jsonwebtoken"

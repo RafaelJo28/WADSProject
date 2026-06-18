@@ -1,3 +1,5 @@
+// Centralized rate limiting helpers used across API routes.
+// Each limiter protects a different endpoint category, such as auth, questions, follow-ups, and OCR.
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { NextRequest } from "next/server";
 
