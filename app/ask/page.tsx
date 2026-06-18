@@ -30,7 +30,7 @@ export default function AskPage() {
       setOcrDone(true)
     } catch (err) {
       console.error(err)
-      setError("OCR failed. Wrong Format.")
+      setError("OCR failed. Please try again!")
     } finally {
       setOcrLoading(false)
     }
